@@ -12,6 +12,14 @@ let intervalIdFirstObstacle;
 let intervalIdSecondObstacle;
 let firstObstacle = document.createElement("div");
 let secondObstacle = document.createElement("div");
+const obstacles = [
+    {width: 30, height: 30, bottomPos: 19, rightPos: 0},
+    {width: 30, height: 30, bottomPos: 80, rightPos: 0},
+    {width: 30, height: 60, bottomPos: 19, rightPos: 0},
+    {width: 60, height: 30, bottomPos: 90, rightPos: 0},
+    {width: 60, height: 60, bottomPos: 19, rightPos: 0},
+    {width: 60, height: 60, bottomPos: 70, rightPos: 0}
+];
 
 function startGame() {
     document.addEventListener("keydown", keyPressed);
@@ -93,15 +101,6 @@ function createTrack() {
     newTrack.style.right = "0px";
     mainDino.appendChild(newTrack);
 }
-
-const obstacles = [
-    {width: 30, height: 30, bottomPos: 19, rightPos: 0},
-    {width: 30, height: 30, bottomPos: 80, rightPos: 0},
-    {width: 30, height: 60, bottomPos: 19, rightPos: 0},
-    {width: 60, height: 30, bottomPos: 90, rightPos: 0},
-    {width: 60, height: 60, bottomPos: 19, rightPos: 0},
-    {width: 60, height: 60, bottomPos: 70, rightPos: 0}
-];
 
 function createObstacle(name, obstacleInfo) {
     name.style.width = `${obstacleInfo.width}px`;
