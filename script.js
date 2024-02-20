@@ -71,14 +71,14 @@ function jumpBackDown() {
 function bendDown() {
     if (downKeyPress) {
         dinosaur.style.height = "30px";
-        dinosaur.style.width = "60px";
+        dinosaur.style.width = "70px";
     }
 }
 
 function getUp() {
     setTimeout(function () {
         if (!downKeyPress) {
-            dinosaur.style.height = "60px";
+            dinosaur.style.height = "70px";
             dinosaur.style.width = "30px";
         }
     }, 400);
@@ -96,11 +96,11 @@ function createTrack() {
 
 const obstacles = [
     {width: 30, height: 30, bottomPos: 19, rightPos: 0},
-    {width: 30, height: 30, bottomPos: 60, rightPos: 0},
+    {width: 30, height: 30, bottomPos: 80, rightPos: 0},
     {width: 30, height: 60, bottomPos: 19, rightPos: 0},
-    {width: 60, height: 30, bottomPos: 60, rightPos: 0},
+    {width: 60, height: 30, bottomPos: 90, rightPos: 0},
     {width: 60, height: 60, bottomPos: 19, rightPos: 0},
-    {width: 60, height: 60, bottomPos: 60, rightPos: 0}
+    {width: 60, height: 60, bottomPos: 70, rightPos: 0}
 ];
 
 function createObstacle(name, obstacleInfo) {
