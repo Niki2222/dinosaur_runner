@@ -8,10 +8,10 @@ let downKeyPress = false;
 let time = 0;
 let screenEnd = 710;
 let intervalIdTime;
-let intervalIdObstacle;
-let intervalIdObstacleBird;
-let newObstacle = document.createElement("div");
-let newObstacleBird = document.createElement("div");
+let intervalIdFirstObstacle;
+let intervalIdSecondObstacle;
+let firstObstacle = document.createElement("div");
+let secondObstacle = document.createElement("div");
 
 function startGame() {
     document.addEventListener("keydown", keyPressed);
@@ -94,71 +94,92 @@ function createTrack() {
     mainDino.appendChild(newTrack);
 }
 
-function createObstacle(name, width, height, bottomPos, rightPos) {
-    name.style.width = `${width}px`;
-    name.style.height = `${height}px`;
+const obstacles = [
+    {width: 30, height: 30, bottomPos: 19, rightPos: 0},
+    {width: 30, height: 30, bottomPos: 60, rightPos: 0},
+    {width: 30, height: 60, bottomPos: 19, rightPos: 0},
+    {width: 60, height: 30, bottomPos: 60, rightPos: 0},
+    {width: 60, height: 60, bottomPos: 19, rightPos: 0},
+    {width: 60, height: 60, bottomPos: 60, rightPos: 0}
+];
+
+function createObstacle(name, obstacleInfo) {
+    name.style.width = `${obstacleInfo.width}px`;
+    name.style.height = `${obstacleInfo.height}px`;
     name.style.backgroundColor = "red";
     name.style.position = "absolute";
-    name.style.bottom = `${bottomPos}px`;
-    name.style.right = `${rightPos}px`;
+    name.style.bottom = `${obstacleInfo.bottomPos}px`;
+    name.style.right = `${obstacleInfo.rightPos}px`;
     mainDino.appendChild(name);
 }
 
+function generateRandomFirstObstacle() {
+    let obstacleInfo = obstacles[Math.floor(Math.random() * obstacles.length)];
+    createObstacle(firstObstacle, obstacleInfo);
+}
+
+function generateRandomSecondObstacle() {
+    let obstacleInfo = obstacles[Math.floor(Math.random() * obstacles.length)];
+    createObstacle(secondObstacle, obstacleInfo);
+}
+
 function obstacleMovement() {
-    let rightPosGround = 0;
-    let rightPosBird = 0;
-    setTimeout(function () {
-        createObstacle(newObstacleBird, 30, 30, 60, 0);
-        intervalIdObstacleBird = setInterval(function () {
-        rightPosBird += 1;
-        newObstacleBird.style.right = `${rightPosBird}px`;
-        if (rightPosBird === screenEnd) {
-            rightPosBird = 0;
-        }
-        }, 5);
-    }, 2000);
-    createObstacle(newObstacle, 30, 30, 19, 0);
-    intervalIdObstacle = setInterval(function () {
-        rightPosGround += 1;
-        newObstacle.style.right = `${rightPosGround}px`;
-        if (rightPosGround === screenEnd) {
-            rightPosGround = 0;
+    let rightPosFirstObstacle = 0;
+    let rightPosSecondObstacle = 0;
+    generateRandomFirstObstacle();
+    intervalIdFirstObstacle = setInterval(function () {
+        rightPosFirstObstacle += 1;
+        firstObstacle.style.right = `${rightPosFirstObstacle}px`;
+        if (rightPosFirstObstacle === screenEnd) {
+            rightPosFirstObstacle = 0;
+            generateRandomFirstObstacle();
         }
         collision();
     }, 5);
+    setTimeout(function () {
+        generateRandomSecondObstacle();
+        intervalIdSecondObstacle = setInterval(function () {
+            rightPosSecondObstacle += 1;
+            secondObstacle.style.right = `${rightPosSecondObstacle}px`;
+            if (rightPosSecondObstacle === screenEnd) {
+                rightPosSecondObstacle = 0;
+                generateRandomSecondObstacle();
+            }
+        }, 5);
+    }, 2000);
 }
 
-function collisionGroundObs() {
+function collisionFirstObs() {
     let dinoRect = dinosaur.getBoundingClientRect();
-    let obstacleGroundRect = newObstacle.getBoundingClientRect();
-    if (dinoRect.bottom > obstacleGroundRect.top
-        && dinoRect.top < obstacleGroundRect.bottom
-        && dinoRect.right > obstacleGroundRect.left
-        && dinoRect.left < obstacleGroundRect.right) {
+    let firstObstacleRect = firstObstacle.getBoundingClientRect();
+    if (dinoRect.bottom > firstObstacleRect.top
+        && dinoRect.top < firstObstacleRect.bottom
+        && dinoRect.right > firstObstacleRect.left
+        && dinoRect.left < firstObstacleRect.right) {
         gameOver();
     }
 }
 
-function collisionBirdObs() {
+function collisionSecondObs() {
     let dinoRect = dinosaur.getBoundingClientRect();
-    let obstacleBirdRect = newObstacleBird.getBoundingClientRect();
-    if (dinoRect.bottom > obstacleBirdRect.top
-        && dinoRect.top < obstacleBirdRect.bottom
-        && dinoRect.right > obstacleBirdRect.left
-        && dinoRect.left < obstacleBirdRect.right) {
+    let secondObstacleRect = secondObstacle.getBoundingClientRect();
+    if (dinoRect.bottom > secondObstacleRect.top
+        && dinoRect.top < secondObstacleRect.bottom
+        && dinoRect.right > secondObstacleRect.left
+        && dinoRect.left < secondObstacleRect.right) {
         gameOver();
     }
 }
 
 function collision() {
-    collisionGroundObs();
-    collisionBirdObs();
+    collisionFirstObs();
+    collisionSecondObs();
 }
 
 function gameOver() {
     clearInterval(intervalIdTime);
-    clearInterval(intervalIdObstacle);
-    clearInterval(intervalIdObstacleBird);
+    clearInterval(intervalIdFirstObstacle);
+    clearInterval(intervalIdSecondObstacle);
     let container = document.querySelector('.container');
     let message = document.createElement('p');
     message.innerText = "GAME OVER!!!";
